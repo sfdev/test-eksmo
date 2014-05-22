@@ -1,0 +1,46 @@
+wonka_cinema_homepage:
+    pattern:  /
+    defaults: { _controller: WonkaCinemaBundle:Default:cinemas }
+
+wonka_cinema_films:
+    pattern:  /films
+    defaults: { _controller: WonkaCinemaBundle:Default:films }
+
+wonka_cinema_api_fill:
+    pattern:  /api/fill
+    defaults: { _controller: WonkaCinemaBundle:Api:fill }
+    methods:  [GET]
+
+
+
+wonka_cinema_api_cinema_schedule:
+    pattern:  /api/cinema/{cinema_slug}/schedule/{hall_id}
+    defaults: { _controller: "WonkaCinemaBundle:Api:cinemaSchedule", hall_id: 0 }
+    methods:  [GET]
+    requirements:
+        hall_id: \d+
+
+wonka_cinema_api_film_schedule:
+    pattern:  /api/film/{film_slug}/schedule
+    defaults: { _controller: "WonkaCinemaBundle:Api:filmSchedule" }
+    methods:  [GET]
+
+wonka_cinema_api_session_places:
+    pattern:  /api/session/{session_id}/places
+    defaults: { _controller: "WonkaCinemaBundle:Api:sessionPlaces" }
+    methods:  [GET]
+    requirements:
+        session_id: \d+
+
+wonka_cinema_api_tickets_buy:
+    pattern:  /api/tickets/buy/{session_id}/{places}
+    defaults: { _controller: "WonkaCinemaBundle:Api:sessionPlaces" }
+    methods:  [POST]
+    requirements:
+        session_id: \d+
+        places: "\d+(?:,\d+)*"
+
+wonka_cinema_api_tickets_reject:
+    pattern:  /api/tickets/reject/{code}
+    defaults: { _controller: "WonkaCinemaBundle:Api:ticketsReject" }
+    methods:  [POST]

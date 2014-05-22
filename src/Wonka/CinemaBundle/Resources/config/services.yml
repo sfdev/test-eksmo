@@ -1,0 +1,8 @@
+parameters:
+    wonka_cinema.format_listener.class: Wonka\CinemaBundle\EventListener\FormatListener
+
+services:
+    wonka_cinema.format_listener:
+        class: %wonka_cinema.format_listener.class%
+        tags:
+            -  { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }

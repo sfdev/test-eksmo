@@ -1,0 +1,35 @@
+{% extends "WonkaCinemaBundle::layout.html.twig" %}
+
+{% block title %}Все фильмы{% endblock %}
+
+{% block content %}
+    
+    <div class="page-header">
+        <h1>Все фильмы</h1>
+    </div>
+    
+    <div class="row">
+    {% for key,film in films %}
+    {% if (((key) % 4) == 0 and (key != 0)) %}
+    </div>
+    <div class="row">
+    {% endif %}
+        <div class="col-md-3">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <a href="{{ path('wonka_cinema_api_film_schedule', { 'film_slug': film.slug }) }}">
+                            <span class="glyphicon glyphicon-facetime-video"></span>
+                            {{ film.title }}
+                        </a>
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    <img class="img-thumbnail" src="{{ film.poster }}" alt="{{ film.title }}" />
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+    
+{% endblock %}

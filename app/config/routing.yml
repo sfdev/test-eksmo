@@ -1,0 +1,4 @@
+wonka_cinema:
+    resource: "@WonkaCinemaBundle/Resources/config/routing.yml"
+    prefix:   /
+

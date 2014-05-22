@@ -1,0 +1,58 @@
+{% extends "WonkaCinemaBundle::layout.html.twig" %}
+
+{% block title %}cinemaScheduleAction{% endblock %}
+
+{% block content %}
+    
+    <div class="page-header">
+        <h1>
+            {{ data.cinema.name }}
+            <small>
+                {{ data.cinema.address }}
+            </small>
+        </h1>
+    </div>
+    
+    <div class="row">
+    {% for key,film in data.schedule %}
+        <div class="col-md-6">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <a class="btn btn-default" href="{{ path('wonka_cinema_api_film_schedule', { 'film_slug': film.slug }) }}">
+                            <span class="glyphicon glyphicon-film"></span>
+                            {{ film.title }}
+                        </a>
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    <div class="col-md-3 col-sm-2">
+                        <img class="img-thumbnail" src="{{ film.poster }}" alt="{{ film.title }}" />
+                    </div>
+                    <div class="col-md-9 col-sm-10">
+                        <ul class="list-group">
+                        {% for session in film.sessions %}
+                            <li class="list-group-item">
+                                <a class="" href="{{ path('wonka_cinema_api_session_places', { 'session_id': session.id }) }}">
+                                    <span class="glyphicon glyphicon-th pull-right"></span>
+                                    {{ session.time|date('Y-m-d H:i:s') }}
+                                </a>
+                                <br />
+                                <a href="{{ path('wonka_cinema_api_cinema_schedule', { 'cinema_slug': data.cinema.slug, 'hall_id': session.hall.id }) }}">
+                                    <span class="glyphicon glyphicon-calendar pull-right"></span>
+                                    {{ session.hall.name }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if (key is odd) %}
+        <div class="clearfix visible-md visible-lg"></div>
+        {% endif %}
+    {% endfor %}
+    </div>
+    
+{% endblock %}

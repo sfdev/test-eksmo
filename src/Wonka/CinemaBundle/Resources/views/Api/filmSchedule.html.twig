@@ -1,0 +1,62 @@
+{% extends "WonkaCinemaBundle::layout.html.twig" %}
+
+{% block title %}cinemaScheduleAction{% endblock %}
+
+{% block content %}
+    
+    <div class="page-header">
+        <h1>{{ data.film.title }}</h1>
+    </div>
+    
+    <div class="row">
+        
+        <div class="col-md-8">
+            {% for key,cinema in data.schedule %}
+                <div class="col-md-6">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">
+                                <a class="btn btn-info" href="{{ path('wonka_cinema_api_cinema_schedule', { 'cinema_slug': cinema.slug }) }}">
+                                    <span class="glyphicon glyphicon-facetime-video"></span>
+                                    {{ cinema.name }}
+                                </a>
+                            </h3>
+                        </div>
+                        <div class="panel-body">
+                            {% for hall in cinema.halls %}
+                            <div>
+                                <h4>
+                                    <a href="{{ path('wonka_cinema_api_cinema_schedule', { 'cinema_slug': cinema.slug, 'hall_id': hall.id }) }}">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                        {{ hall.name }}
+                                    </a>
+                                    на {{ hall.places_count }} мест
+                                </h4>
+                                <ul class="list-group">
+                                {% for session in hall.sessions %}
+                                    <li class="list-group-item">
+                                        <a href="{{ path('wonka_cinema_api_session_places', { 'session_id': session.id }) }}">
+                                            <span class="glyphicon glyphicon-th pull-right"></span>
+                                            {{ session.time|date('Y-m-d H:i:s') }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                                </ul>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% if (key is odd) %}
+                <div class="clearfix visible-md visible-lg"></div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        
+        <div class="col-md-4">
+            <img class="img-thumbnail" src="{{ data.film.poster }}" alt="{{ data.film.title }}" />
+        </div>
+        
+    </div>
+    
+{% endblock %}

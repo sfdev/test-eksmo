@@ -1,0 +1,52 @@
+body {
+    padding-top: 70px;
+    padding-bottom: 30px;
+}
+
+.theme-dropdown .dropdown-menu {
+    position: static;
+    display: block;
+    margin-bottom: 20px;
+}
+
+.theme-showcase > p > .btn {
+    margin: 5px 0;
+}
+
+.disable-select {
+    -webkit-user-select: none;  
+    -moz-user-select: none;    
+    -ms-user-select: none;      
+    user-select: none;
+}
+
+button.json-ajax {
+    margin: 0 1em;
+    line-height: 10px;
+    font-size: 11px;
+}
+
+*:hover > button.json-ajax {
+    display: inline-block;
+    visibility: visible;
+}
+
+#ajax_response .modal-content {
+    padding: 1em 2em;
+}
+
+#session_places .btn-primary:hover, #session_places .btn-primary:focus {
+    background-color: #419641;
+    background-image: linear-gradient(to bottom, #5CB85C 0px, #419641 100%);
+    background-position: 0 -15px;
+    border-color: #3E8F3E;
+}
+#session_places .btn-primary:active, #session_places .btn-primary.active {
+    background-color: #419641;
+    background-image: linear-gradient(to bottom, #5CB85C 0px, #419641 100%);
+    border-color: #3E8F3E;
+}
+
+form.form-inline {
+    padding: 1em;
+}

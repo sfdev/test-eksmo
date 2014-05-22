@@ -1,0 +1,160 @@
+{% extends "WonkaCinemaBundle::layout.html.twig" %}
+
+{% block title %}sessionPlacesAction{% endblock %}
+
+{% block content %}
+    
+    <div class="page-header">
+        <h1>
+            {{ data.session.film.title }}
+            <small>
+                {{ data.session.time|date('Y-m-d H:i:s') }}
+            </small>
+        </h1>
+        <h2>
+            <small>
+                Кинотеатр
+            </small>
+            {{ data.session.hall.cinema.name }},
+            <small>
+                {{ data.session.hall.name }}
+            </small>
+        </h2>
+    </div>
+
+    {% for flashMessage in app.session.flashbag.get('error') %}
+    <div class="alert alert-danger alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <em>Notice</em>: {{ flashMessage }}
+    </div>
+    {% endfor %}
+
+    <div id="session_places" class="row disable-select">
+        <div class="btn-group btn-group-justified col-md-12 " data-toggle="buttons">
+        {% for i in range(1, data.session.hall.places_count) %}
+        {% if (((i-1) % 10) == 0 and (i != 1)) %}
+        </div>
+        <div class="btn-group btn-group-justified col-md-12" data-toggle="buttons">
+        {% endif %}
+            <label class="btn {{ (i in data.free_places) ? 'btn-primary' : 'btn-danger disabled' }}">
+                <input type="checkbox" name="places" value="{{ i }}">{{ i }}
+            </label>
+        {% endfor %}
+        </div>
+    </div>
+    
+    <div class="row text-center">
+        <div class="col-md-6">
+            <form id="form_tickets_reject" class="form-inline" method="post" action="/api/tickets/reject/" data-action="/api/tickets/reject/" role="form">
+                <div class="form-group">
+                    <label class="sr-only" for="reject_code">Код для удаления</label>
+                    <input type="text" class="form-control" id="reject_code" placeholder="Код для удаления" required>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-lg btn-danger" type="submit">
+                        Удалить
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </button>
+                    <button class="json-ajax btn btn-xs btn-default invisible">
+                        <span class="glyphicon glyphicon-transfer"></span>
+                        json
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <form id="form_tickets_buy" class="form-inline" method="post" action="/api/tickets/buy/{{ data.session.id }}/" data-action="/api/tickets/buy/{{ data.session.id }}/" role="form">
+                <button class="btn btn-lg btn-warning" type="reset">
+                    Сбросить
+                    <span class="glyphicon glyphicon-remove"></span>
+                </button>
+                <button class="btn btn-lg btn-success" type="submit">
+                    Забронировать
+                    <span class="glyphicon glyphicon-ok"></span>
+                </button>
+                <button class="json-ajax btn btn-xs btn-default invisible">
+                    <span class="glyphicon glyphicon-transfer"></span>
+                    json
+                </button>
+            </form>
+        </div>
+    </div>
+    
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        var getCheckedValues = function(element){
+            var elem = (element && element.jquery) ? element : $('body'),
+                coll = [],
+                checked_values;
+            elem.find('input:checked').each(function(){
+                coll.push($(this).val());
+            });
+            if (!coll.length) {
+                return '';
+            }
+            return coll.join(',');
+        }
+        
+        $('div#session_places input[type=checkbox]').change(function(e){
+            var places = getCheckedValues($('div#session_places'));
+            $('form#form_tickets_buy').attr('action', $('form#form_tickets_buy').data('action') + places);
+        });
+        $('form#form_tickets_buy').on('submit', function(e){
+            if ($(this).data('action') == $(this).attr('action')) {
+                showModal('Ошибка', 'Выберите места', '');
+                e.preventDefault();
+            }
+        });
+        
+        $('form#form_tickets_buy').on('click', 'button.json-ajax', function(e){
+            e.preventDefault();
+            var url = $('form#form_tickets_buy').attr('action'),
+                request_method = $('form#form_tickets_buy').attr('method') == 'post' ? 'post' : 'get';
+            $.ajax({
+                url: url,
+                type: request_method,
+                dataType: 'json',
+                success: function(data){
+                    var pretty = JSON.stringify(data, undefined, 4);
+                    showModal('Ответ сервера', url, pretty);
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown){
+                    showModal('Ответ сервера', url, errorThrown);
+                }
+            });
+        });
+        
+        $('form#form_tickets_reject').on('click', 'button.json-ajax', function(e){
+            e.preventDefault();
+            var url = $('form#form_tickets_reject').attr('action'),
+                request_method = $('form#form_tickets_reject').attr('method') == 'post' ? 'post' : 'get';
+            $.ajax({
+                url: url,
+                type: request_method,
+                dataType: 'json',
+                success: function(data){
+                    var pretty = JSON.stringify(data, undefined, 4);
+                    showModal('Ответ сервера', url, pretty);
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown){
+                    showModal('Ответ сервера', url, errorThrown);
+                }
+            });
+        });
+        
+        $('form#form_tickets_reject').on('input change', 'input#reject_code', function(e){
+            $('form#form_tickets_reject').attr('action', $('form#form_tickets_reject').data('action') + $(this).val());
+        });
+        
+        $('form#form_tickets_buy').on('click', 'button[type=reset]', function(e){
+            $('div#session_places input[type=checkbox]').removeAttr('checked');
+            $('div#session_places label').removeClass('active');
+            $('form#form_tickets_buy').attr('action', $('form#form_tickets_buy').data('action'));
+        });
+        
+        $('form#form_tickets_buy button[type=reset]').click();
+        $('form#form_tickets_reject input#reject_code').val('');
+    </script>
+{% endblock %}

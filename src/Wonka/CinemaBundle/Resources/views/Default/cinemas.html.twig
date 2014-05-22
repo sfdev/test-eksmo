@@ -1,0 +1,31 @@
+{% extends "WonkaCinemaBundle::layout.html.twig" %}
+
+{% block title %}Все кинотеатры{% endblock %}
+
+{% block content %}
+    
+    <div class="page-header">
+        <h1>Все кинотеатры</h1>
+    </div>
+    
+    <div class="row">
+        {% for cinema in cinemas %}
+        <div class="col-md-3">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <a class="btn btn-default" href="{{ path('wonka_cinema_api_cinema_schedule', { 'cinema_slug': cinema.slug }) }}">
+                            <span class="glyphicon glyphicon-facetime-video"></span>
+                            {{ cinema.name }}
+                        </a>
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    {{ cinema.address }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+{% endblock %}
